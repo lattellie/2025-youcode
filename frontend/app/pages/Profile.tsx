@@ -60,9 +60,20 @@ const Profile: React.FC<Props> = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {images.length > 0 ? images.map((img) => (
-        <GalleryImage key={img.id} img={img} />
-      )) : <Text>No posts</Text>}
+      {images.length > 0 ? (
+        <>
+          {images.map((img) => {
+            console.log(img);
+            return <GalleryImage key={img.id} img={img} />;
+          })}
+        </>
+      ) : (
+        <View style={styles.separatorContainer}>
+          <View style={styles.line} />
+          <Text style={styles.separatorText}>No Post</Text>
+          <View style={styles.line} />
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -126,6 +137,22 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     marginBottom: 1,
     textAlign: "center",
+  },
+  separatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 16,
+    marginTop: 1,
+  },
+  line: {
+    height: 1,
+    width: '10%',
+    backgroundColor: '#ccc',
+  }, 
+  separatorText: {
+    marginHorizontal: 8,
+    fontSize: 12,
+    color: '#888',
   },
 });
 
