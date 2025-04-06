@@ -1,6 +1,6 @@
 // app/pages/Page2.tsx
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 type Props = {
   navigation: any;
@@ -9,29 +9,57 @@ type Props = {
 const Start: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Main page</Text>
-      <Button
-        title="Register"
+      <Image
+        source={require('../../assets/mainIconScaledDown.png')}
+        style={styles.logo}
+      />
+
+
+      <TouchableOpacity
+        style={styles.button}
         onPress={() => navigation.navigate('Register')}
-      />
-      <Button
-        title="Login"
+      >
+        <Text style={styles.buttonText}>Register</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
         onPress={() => navigation.navigate('Login')}
-      />
+      >
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#FFFFFF',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
-  text: {
-    fontSize: 24,
-    marginBottom: 20,
+  button: {
+    backgroundColor: '#1F1F1F',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 6,
+    marginVertical: 20,
+    width: '80%',
+    alignItems: 'center',
   },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  logo: {
+    width: 250,
+    height: 270,
+    marginBottom: 30,
+  },
+  
 });
 
 export default Start;
