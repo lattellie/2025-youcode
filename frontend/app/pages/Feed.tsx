@@ -17,7 +17,7 @@ const Feed: React.FC<Props> = ({ navigation }) => {
     { label: 'Outdoor Shanghai Club', value: '123' },
     { label: 'Outdoor Jakarta Club', value: 'club_access_code' },
     { label: 'Outdoor Taiwan Group', value: '1234' },
-    { label: 'Outdoor Vancouver Group', value: '1234' },
+    { label: 'Outdoor Vancouver Group', value: '0' },
   ];
 
   useEffect(() => {
