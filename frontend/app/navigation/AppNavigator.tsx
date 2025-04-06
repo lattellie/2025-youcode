@@ -10,6 +10,8 @@ import Login from '../pages/Login';
 import Feed from '../pages/Feed';
 import Gallery from '../pages/Gallery';
 import Camera from '../pages/Camera';
+import Profile from '../pages/Profile';
+
 const Stack = createStackNavigator();
 
 const AppNavigator: React.FC = () => {
@@ -24,6 +26,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="Feed" component={Feed} />
         <Stack.Screen name="MainPage" component={MainPage} />
         <Stack.Screen name="Gallery" component={Gallery} />
+        <Stack.Screen name="Profile" component={Profile} />
       </Stack.Navigator>
     </NavigationContainer>
   );

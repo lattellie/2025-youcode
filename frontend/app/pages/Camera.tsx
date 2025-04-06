@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import { useStorage } from '../hooks/useStorage';
 const { width, height } = Dimensions.get('window');
 
 type Props = {
@@ -22,7 +23,7 @@ const Camera: React.FC<Props> = ({ navigation }) => {
   const [tags, setTags] = useState<string[]> ([]);
   const [facing, setFacing] = useState<CameraType>('back');
   const [modalVisible, setModalVisible] = useState(false);
-
+  const { getUserData } = useStorage();
   const convertImageToBase64 = async (uri:string) => {
     try {
       const manipResult = await ImageManipulator.manipulateAsync(
@@ -215,7 +216,7 @@ const Camera: React.FC<Props> = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => {setDonePhoto(0); setUriFront(null); setUriBack(null);setOutdoor(null)}}
+            onPress={() => {setDonePhoto(0); setUriFront(null); setUriBack(null);setOutdoor(null);setModalVisible(false)}}
           >
             <Text style={styles.buttonText}>Retake</Text>
           </TouchableOpacity>
@@ -227,43 +228,34 @@ const Camera: React.FC<Props> = ({ navigation }) => {
   const sendToServer = async () => {
     try {
       if (uriFront && uriBack) {
-        const uuid = uuidv4();
-        // console.log(uuid);
+        const { user_id } = await getUserData();
         const img64 = await convertImageToBase64(uriFront);
         const img64b = await convertImageToBase64(uriBack);
 
         console.log("sending");
-        const retOutdoor:boolean = false;
-        const retTags = ['ttttttttttttttttttttttt','tag2','tag3','tag4','tag5'];
-        setOutdoor(retOutdoor);
-        setTags(retTags);
-        if (retOutdoor) {
-          setDonePhoto(2);
-        } else {
-          setModalVisible(true);
-        }
+        const req = await fetch('https://excited-frog-reasonably.ngrok-free.app/upload', {
+          method: 'POST',
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            "user_id": user_id,
+            "fimage": img64,
+            "bimage": img64b
+          })})
+
+          const res = await req.json();
+          if (res.ok) {
+            // outdoor
+            setOutdoor(true)
+            setTags(res.tags)
+            // setModalVisible(false)
+            setDonePhoto(2)
+            navigation.navigate('Feed');
+          } else {
+            setOutdoor(false)
+            setModalVisible(true);
+            // setDonePhoto(2)
+          }
         console.log(`isOutdoor: ${isOutdoor}, tags: ${tags}`)
-
-
-        // const response = await fetch('https://excited-frog-reasonably.ngrok-free.app/upload', {
-        //   method: 'POST', 
-        //   headers: {"Content-Type":"application/json"},
-        //   body:JSON.stringify({
-        //     fname:`${uuid}_f.jpg`,
-        //     fimage: img64,
-        //     bname:`${uuid}_b.jpg`,
-        //     bimage: img64b,
-        //   }),
-        // });
-
-        // console.log("after request")
-        // console.log(response)
-        // if (!response.ok) {
-        //   throw new Error(`HTTP error! status: ${response.status}`);
-        // } else {
-        //   const result = await response.json();
-        //   console.log(result);
-        // }
       }
     } catch (error) {
       console.error('Error sending data to server:', error);
@@ -390,4 +382,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   }
 });
+
 export default Camera;
