@@ -14,8 +14,13 @@ const Start: React.FC<Props> = ({ navigation }) => {
             resizeMode="cover"
         >
             <View style={styles.container}>
-
-                <Text style={styles.head}>Flock</Text>
+                <View style = {{flexDirection: 'row'}}>
+                    <Image 
+                        source={require('../../assets/logo.png')}
+                        style={{ width:'20%',height:'80%',marginRight:'3%' }}
+                    />
+                    <Text style={[styles.head]}>Flock</Text>
+                </View>
 
                 <Image
                     source={require('../../assets/mainIcon_ScaledDown.png')}
@@ -49,7 +54,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         //justifyContent: 'center',
-        marginTop: 130,
+        marginTop: '15%',
         alignItems: 'center',
         paddingHorizontal: 20,
     },
@@ -58,7 +63,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 24,
         borderRadius: 6,
-        marginVertical: 15,
+        marginVertical: 5,
         width: 250,
         alignItems: 'center',
     },
@@ -73,7 +78,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     head:{
-        fontSize: 34,
+        fontSize: 50,
         marginTop: 1,
         marginBottom: 20,
         fontWeight: 'bold',
