@@ -1,6 +1,6 @@
 // app/pages/Page2.tsx
 import React from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import {ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useStorage } from '../hooks/useStorage';
@@ -101,82 +101,113 @@ const Register: React.FC<Props> = ({ navigation }) => {
 
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.head}>Register for an account</Text>
-      <Text style={styles.text}>
-        Already have an account?{" "}
-        <Text style={styles.link} onPress={() => navigation.navigate("Login")}>
-          Log in!{" "}
+    <ImageBackground
+      source={require("../../assets/background.png")} // 👈 your background image
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <Text style={styles.head}>Register for an account</Text>
+        <Text style={styles.text}>
+          Already have an account?{" "}
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate("Login")}
+          >
+            Log in!{" "}
+          </Text>
         </Text>
-      </Text>
-      <TextInput
-      style={styles.input}
-      placeholder="First Name"
-      value={firstName}
-      onChangeText={setFirstName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        value={lastName}
-        onChangeText={setLastName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Access Code"
-        value={accessCode}
-        onChangeText={setAccessCode}
-      />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleRegister}
-      >
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
+        <View style={styles.inputRow}>
+          <View style={styles.inputColumn}>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              value={username}
+              onChangeText={setUsername}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+          </View>
 
-      <View style={styles.separatorContainer}>
-        <View style={styles.line} />
-        <Text style={styles.separatorText}>Continue with</Text>
-        <View style={styles.line} />
+          <View style={styles.inputColumn}>
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={setLastName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Access Code"
+              value={accessCode}
+              onChangeText={setAccessCode}
+            />
+          </View>
+        </View>
+
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+
+        <View style={styles.separatorContainer}>
+          <View style={styles.line} />
+          <Text style={styles.separatorText}>Continue with</Text>
+          <View style={styles.line} />
+        </View>
+
+        <TouchableOpacity style={styles.facebookButton}>
+        <View style={styles.buttonContent}>
+          <FontAwesome name="facebook" size={16} color="white" />
+          <Text style={styles.fakeButtonText}>Login with Facebook</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.googleButton}>
+          <View style={styles.buttonContent}>
+            <FontAwesome name="google" size={16} color="#000000" />
+            <Text style={styles.googleButtonText}>Login with Google</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.appleButton}>
+          <View style={styles.buttonContent}>
+            <FontAwesome name="apple" size={16} color="white" />
+            <Text style={styles.fakeButtonText}>Login with Apple</Text>
+          </View>
+        </TouchableOpacity>
       </View>
-
-      <TouchableOpacity style={styles.facebookButton}>
-        <FontAwesome name="facebook" size={16} color="white" />
-        <Text style={styles.fakeButtonText}>Login with Facebook</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.googleButton}>
-        <FontAwesome name="google" size={16} color="#9AA0A6" />
-        <Text style={styles.googleButtonText}>Login with Google</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.appleButton}>
-        <FontAwesome name="apple" size={16} color="white" />
-        <Text style={styles.fakeButtonText}>Login with Apple</Text>
-      </TouchableOpacity>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+},
   link:{
     fontSize: 14,
     marginBottom: 20,
@@ -186,29 +217,21 @@ const styles = StyleSheet.create({
   head:{
     fontSize: 24,
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 15,
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
   },
   container: {
     flex: 1,
-    marginTop: 15,
+    marginTop: 80,
     // justifyContent: 'center',
     alignItems: 'center',
   },
   text: {
     fontSize: 14,
-    marginBottom: 20,
+    marginBottom: 15,
     textAlign: 'left',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#aaa',
-    padding: 12,
-    marginVertical: 8,
-    borderRadius: 6,
-    width: '50%'
   },
   button: {
     backgroundColor: '#1F1F1F',
@@ -216,7 +239,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 6,
     marginVertical: 50,
-    marginTop: 30,
+    marginTop: 20,
     width: '50%',
     alignItems: 'center',
   },
@@ -237,7 +260,7 @@ const styles = StyleSheet.create({
   },
   googleButton: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#9AA0A6',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 6,
@@ -251,12 +274,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+    
   },
   googleButtonText: {
     marginLeft: 8,
-    color: '#9AA0A6',
-    fontSize: 16,
+    color: '#000000',
     fontWeight: '600',
+    flexShrink: 1,
   },
   appleButton: {
     flexDirection: 'row',
@@ -291,7 +315,26 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     fontSize: 12,
     color: '#888',
-  }
+  },
+  inputRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    gap: 20,
+  },
+  
+  inputColumn: {
+    flex: 1,
+  },
+  
+  input: {
+    borderWidth: 1,
+    borderColor: '#aaa',
+    padding: 12,
+    marginVertical: 8,
+    borderRadius: 6,
+    width: '100%',
+  },
 
 });
 

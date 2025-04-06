@@ -14,9 +14,10 @@ const Feed: React.FC<Props> = ({ navigation }) => {
 
   const data = [
     { label: 'No Selection', value: null },
-    { label: 'Outdoor Japan Club', value: '123' },
-    { label: 'Outdoor Club', value: 'club_access_code' },
-    { label: 'Lazy Group', value: '3' },
+    { label: 'Outdoor Shanghai Club', value: '123' },
+    { label: 'Outdoor Jakarta Club', value: 'club_access_code' },
+    { label: 'Outdoor Taiwan Group', value: '1234' },
+    { label: 'Outdoor Vancouver Group', value: '1234' },
   ];
 
   useEffect(() => {
@@ -55,20 +56,45 @@ const Feed: React.FC<Props> = ({ navigation }) => {
         value={value}
         onChange={(item) => {
           setValue(item.value);
-          console.log('Selected:', item);
+          console.log("Selected:", item);
         }}
       />
 
-      {images.map((img) => {
-        console.log(img);
-        return (
-        <GalleryImage key={img.id} img={img} />
-      )})}
+      {images.length > 0 ? (
+        <>
+          {images.map((img) => {
+            console.log(img);
+            return <GalleryImage key={img.id} img={img} />;
+          })}
+        </>
+      ) : (
+        <View style={styles.separatorContainer}>
+          <View style={styles.line} />
+          <Text style={styles.separatorText}>No Post</Text>
+          <View style={styles.line} />
+        </View>
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  separatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 16,
+    marginTop: 1,
+  },
+  line: {
+    height: 1,
+    width: '10%',
+    backgroundColor: '#ccc',
+  }, 
+  separatorText: {
+    marginHorizontal: 8,
+    fontSize: 12,
+    color: '#888',
+  },
   container: {
     alignItems: 'center',
     paddingVertical: 10,
