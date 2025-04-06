@@ -129,6 +129,9 @@ const Camera: React.FC<Props> = ({ navigation }) => {
                 <Text style={styles.buttonText}>{tag}</Text>
               </TouchableOpacity>
             ))}
+            <TouchableOpacity key={'feed tag'} style={styles.button} onPress={()=>{navigation.navigate('Feed')}}>
+              <Text style={styles.buttonText}>Process To Feed</Text>
+            </TouchableOpacity>
           </View>
       </View>
     )
@@ -199,9 +202,9 @@ const Camera: React.FC<Props> = ({ navigation }) => {
           </View>
                 <View style={styles.oneLine}>
                   <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText} onPress={()=>{navigation.goBack()}}>Back to Main</Text>
+                    <Text style={styles.buttonText} onPress={()=>{navigation.navigate('MainPage');setModalVisible(false)}}>Back to Main</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={()=>{setDonePhoto(0);setFacing('back');setUriBack(null);setUriFront(null)}}>
+                  <TouchableOpacity style={styles.button} onPress={()=>{setDonePhoto(0);setFacing('back');setUriBack(null);setUriFront(null);setModalVisible(false)}}>
                     <Text style={styles.buttonText}>Retry</Text>
                   </TouchableOpacity>
                 </View>
@@ -232,7 +235,7 @@ const Camera: React.FC<Props> = ({ navigation }) => {
         const img64 = await convertImageToBase64(uriFront);
         const img64b = await convertImageToBase64(uriBack);
 
-        console.log("sending");
+        console.log(`sending ${user_id}`);
         const req = await fetch('https://excited-frog-reasonably.ngrok-free.app/upload', {
           method: 'POST',
           headers: {"Content-Type":"application/json"},
@@ -243,19 +246,25 @@ const Camera: React.FC<Props> = ({ navigation }) => {
           })})
 
           const res = await req.json();
-          if (res.ok) {
+          console.log(res);
+          console.log(req.ok);
+          if (req.ok) {
             // outdoor
             setOutdoor(true)
             setTags(res.tags)
             // setModalVisible(false)
+            console.log(`is outdoor: ${isOutdoor}, tags: ${tags}`)
             setDonePhoto(2)
-            navigation.navigate('Feed');
+            // navigation.navigate('Feed');
           } else {
             setOutdoor(false)
+            setTags(res.tags)
+            console.log(`is not Outdoor: ${isOutdoor}, tags: ${tags}`)
+
             setModalVisible(true);
             // setDonePhoto(2)
           }
-        console.log(`isOutdoor: ${isOutdoor}, tags: ${tags}`)
+        
       }
     } catch (error) {
       console.error('Error sending data to server:', error);

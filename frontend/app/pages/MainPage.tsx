@@ -1,6 +1,7 @@
 // app/pages/MainPage.tsx
 import React from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, Dimensions} from 'react-native';
+const { width, height } = Dimensions.get('window');
 
 type Props = {
     navigation: any;
@@ -9,7 +10,7 @@ type Props = {
 const MainPage: React.FC<Props> = ({ navigation }) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Going{'\n'}Outside{'\n'}Today{'\n'}?</Text>
+            <Text style={styles.text}>Going Outside Today?</Text>
             
             <View style={styles.buttonColumn}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Camera')}>
@@ -33,18 +34,19 @@ const MainPage: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#b4b4b4',
         flex: 1,
-        flexDirection: 'row',
+        width: width,
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
     },
     text: {
         color: '#262627',
+        marginBottom: 30,
         fontSize: 30,
         fontWeight:'bold',
         marginRight: 20,
-        maxWidth: '30%',
         lineHeight: 40,
     },
     buttonColumn: {
@@ -52,6 +54,7 @@ const styles = StyleSheet.create({
         gap: 10, 
     },
     button: {
+        flexDirection:'row',
         backgroundColor: '#FFFFFF',
         paddingVertical: 20,
         paddingHorizontal: 20,
@@ -61,8 +64,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: -4, height: 4 },
         shadowOpacity: 0.03,
         shadowRadius: 1,
-        width: 216,
-        height: 224,
     },
     icon: {
         alignSelf: 'center',
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#171717',
+        width: '60%',
         fontSize: 20,
         fontWeight: '600',
         flexWrap: 'wrap',
