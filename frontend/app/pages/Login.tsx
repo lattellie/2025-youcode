@@ -1,6 +1,6 @@
 // app/pages/Page2.tsx
 import React from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 type Props = {
@@ -13,6 +13,11 @@ const Login: React.FC<Props> = ({ navigation }) => {
   const [password, setPassword] = React.useState('');
 
   return (
+    <ImageBackground
+                source={require('../../assets/background.png')} // 👈 your background image
+                style={styles.background}
+                resizeMode="cover"
+            >
     <View style={styles.container}>
       <Text style={styles.head}>Login to your account</Text>
       <Text style={styles.text}>
@@ -63,10 +68,16 @@ const Login: React.FC<Props> = ({ navigation }) => {
         <Text style={styles.fakeButtonText}>Login with Apple</Text>
       </TouchableOpacity>
     </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+},
   link:{
     fontSize: 14,
     marginBottom: 20,
@@ -83,7 +94,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    marginTop: 105,
     alignItems: 'center',
   },
   text: {
@@ -103,7 +114,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 6,
-    marginVertical: 90,
+    marginVertical: 40,
     marginTop: 30,
     width: '50%',
     alignItems: 'center',

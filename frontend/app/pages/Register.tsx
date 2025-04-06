@@ -3,7 +3,7 @@ import React from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useStorage, storeUserId } from '../hooks/useStorage';
+import { useStorage } from '../hooks/useStorage';
 import { useEffect, useRef } from 'react';
 import * as Notifications from 'expo-notifications';
 import { registerForPushNotificationsAsync } from '../utilities/notification';
@@ -37,7 +37,7 @@ const Register: React.FC<Props> = ({ navigation }) => {
   const [password, setPassword] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [accessCode, setAccessCode] = React.useState('');
-  const { setData,  } = useStorage('registerData');
+  const { storeUserData } = useStorage();
   const [expoToken, setExpoToken] = React.useState<string | null>(null);
 
   useEffect(() => {
@@ -61,6 +61,16 @@ const Register: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
+    const userData = {
+      "first_name": firstName,
+      "last_name": lastName,
+      "username": username,
+      "email": email,
+      "pwd": password,
+      "club_code": accessCode,
+      "expo_token": expoToken,
+    }
+
     try {
       // Send to backend API
       const response = await fetch('https://excited-frog-reasonably.ngrok-free.app/register', {
@@ -68,15 +78,7 @@ const Register: React.FC<Props> = ({ navigation }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          "first_name": firstName,
-          "last_name": lastName,
-          "username": username,
-          "email": email,
-          "pwd": password,
-          "club_code": accessCode,
-          "expo_token": expoToken,
-        }),
+        body: JSON.stringify(userData),
       });
 
       const result = await response.json();
@@ -84,7 +86,8 @@ const Register: React.FC<Props> = ({ navigation }) => {
 
       if (result.user_id) {
         // 3. Save userId locally
-        await storeUserId(result.user_id);
+        // await storeUserId(result.user_id);
+        await storeUserData({"user_id": result.user_id, ...userData})
         console.log('userId received and stored:', result.user_id);
       } else {
         console.warn('No userId returned from backend');

@@ -1,8 +1,7 @@
-// app/pages/Page2.tsx
-import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+// app/pages/Feed.tsx
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useState } from 'react';
 import GalleryImage from '../components/GalleryImage';
 
 type Props = {
@@ -10,20 +9,40 @@ type Props = {
 };
 
 const Feed: React.FC<Props> = ({ navigation }) => {
+  const [value, setValue] = useState(null);
+  const [images, setImages] = useState<any[]>([]);
+
   const data = [
-    { label: 'Option 1', value: '1' },
-    { label: 'Option 2', value: '2' },
-    { label: 'Option 3', value: '3' },
+    { label: 'No Selection', value: null },
+    { label: 'Outdoor Japan Club', value: '123' },
+    { label: 'Outdoor Club', value: 'club_access_code' },
+    { label: 'Lazy Group', value: '3' },
   ];
-  const images = [
-  { id: 1, source: require('../../assets/cameraScaledDown.png') },
-  { id: 2, source: require('../../assets/cameraScaledDown.png') },
-  { id: 3, source: require('../../assets/cameraScaledDown.png') },
-  ];
-  const [value, setValue] = useState("null");
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await fetch(`https://excited-frog-reasonably.ngrok-free.app/photos?${value ? `club=${value}` : ''}`);
+        const json = await response.json();
+
+        // const formatted = json.photos.map((photo: any) => ({
+        //   id: photo.user_id,
+        //   front_url: { uri: photo.front_url },
+        //   back_url: { uri: photo.back_url },
+        // }));
+
+        setImages(json.photos);
+      } catch (err) {
+        console.error('Failed to fetch images:', err);
+      }
+    };
+
+    fetchImages();
+  }, [value]);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.text}>Explore</Text>
+      <Text style={styles.head}>Explore your feed!</Text>
 
       <Dropdown
         style={styles.dropdown}
@@ -32,17 +51,19 @@ const Feed: React.FC<Props> = ({ navigation }) => {
         data={data}
         labelField="label"
         valueField="value"
-        placeholder="Select..."
+        placeholder="Select groups to view their photos!"
         value={value}
         onChange={(item) => {
           setValue(item.value);
-          console.log("Selected:", item);
+          console.log('Selected:', item);
         }}
       />
 
-      {images.map((img) => (
-        <GalleryImage key={img.id} source={img.source} />
-      ))}
+      {images.map((img) => {
+        console.log(img);
+        return (
+        <GalleryImage key={img.id} img={img} />
+      )})}
     </ScrollView>
   );
 };
@@ -50,7 +71,8 @@ const Feed: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 10,
+    gap: 10,
   },
   text: {
     fontSize: 24,
@@ -60,7 +82,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderColor: '#ccc',
     borderWidth: 1,
-    width: '50%',
+    width: '70%',
     borderRadius: 8,
     paddingHorizontal: 6,
     marginBottom: 20,
@@ -73,16 +95,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
-  // gallery: {
-  //   width: '100%',
-  //   alignItems: 'center',
-  // },
-  // image: {
-  //   width: 300,
-  //   height: 300,
-  //   marginBottom: 16,
-  //   borderRadius: 12,
-  // },
+  head:{
+    fontSize: 24,
+    marginTop: 20,
+    marginBottom: 10,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+  },
 });
 
 export default Feed;
