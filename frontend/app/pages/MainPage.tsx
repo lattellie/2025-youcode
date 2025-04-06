@@ -1,6 +1,6 @@
 // app/pages/MainPage.tsx
 import React from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image, Dimensions} from 'react-native';
+import { ImageBackground, View, Text, Button, StyleSheet, TouchableOpacity, Image, Dimensions} from 'react-native';
 const { width, height } = Dimensions.get('window');
 
 type Props = {
@@ -9,36 +9,53 @@ type Props = {
 
 const MainPage: React.FC<Props> = ({ navigation }) => {
     return (
+        <ImageBackground
+                    source={require('../../assets/background.png')} // 👈 your background image
+                    style={styles.background}
+                    resizeMode="cover"
+                >
         <View style={styles.container}>
-            <Text style={styles.text}>Going Outside Today?</Text>
+            <Text style={styles.text}>Going Outside? Share it!</Text>
             
             <View style={styles.buttonColumn}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Camera')}>
+                    
                     <Text style={styles.buttonText}>Yes!{'\n'}Click here to take a picture and upload</Text>
                     <Image source={require('../../assets/cameraScaledDown.png')} style={styles.icon} />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Profile')}>
-                    <Text style={styles.buttonText}>I want to check out my profile!</Text>
+                    <Text style={styles.buttonText}>Thanks, {'\n'} I want to check out my profile!</Text>
                     <Image source={require('../../assets/profile.png')} style={styles.icon} />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Feed')}>
-                    <Text style={styles.buttonText}>I’ll browse my feed for now!</Text>
+                    <Text style={styles.buttonText}>Thanks, {'\n'} I’ll browse my feed for now!</Text>
                     <Image source={require('../../assets/galleryScaledDown.png')} style={styles.icon} />
                 </TouchableOpacity>
             </View>
         </View>
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
+    buttonContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+      },
+    background: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     container: {
-        backgroundColor: '#b4b4b4',
         flex: 1,
         width: width,
         flexDirection: 'column',
-        justifyContent: 'center',
+        marginTop: 120,
         alignItems: 'center',
     },
     text: {
@@ -77,6 +94,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         flexWrap: 'wrap',
         marginBottom: 20,
+        marginTop: 20,
+        textAlign: 'center',
     },
 });
 
