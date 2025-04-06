@@ -2,9 +2,11 @@ import { CameraMode, CameraType, CameraView, useCameraPermissions } from 'expo-c
 import { useEffect, useRef, useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
-import * as FileSystem from 'expo-file-system';  // Import expo-file-system
+import * as ImageManipulator from 'expo-image-manipulator';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
-export default function App() {
+export default function Camera() {
   const [permission, requestPermission] = useCameraPermissions();
   const ref = useRef<CameraView>(null);
   const [uriFront, setUriFront] = useState<string | null>(null);
@@ -14,26 +16,22 @@ export default function App() {
   const [mode, setMode] = useState<CameraMode>('picture');
   const [facing, setFacing] = useState<CameraType>('back');
   const [savedUri, setSavedUri] = useState<string | null>(null);
-
-  // const saveImageToDisk = async (uri: string) => {
-  //   try {
-  //     // Define a new file path to save the image
-  //     const fileName = `${FileSystem.documentDirectory}${new Date().toISOString()}.jpg`;  // Unique filename with current timestamp
-
-  //     // Move the image from its URI to the new location
-  //     await FileSystem.moveAsync({
-  //       from: uri,
-  //       to: fileName,
-  //     });
-
-  //     // Update the saved URI
-  //     setSavedUri(fileName);
-  //     console.log('Image saved to disk at:', fileName);
-  //   } catch (error) {
-  //     console.error('Error saving image:', error);
-  //   }
-  // };
-
+  const convertImageToBase64 = async (uri:string) => {
+    try {
+      // Manipulate the image (no actual changes are made, just converting)
+      const manipResult = await ImageManipulator.manipulateAsync(
+        uri,
+        [],
+        { base64: true }
+      );
+      // console.log('Base64 Image:', manipResult.base64);
+      return manipResult.base64;
+    } catch (error) {
+      console.error('Error converting image to base64:', error);
+    }
+  };
+  
+  
   if (!permission) {
     return null;
   }
@@ -89,17 +87,22 @@ export default function App() {
 
   const sendToServer = async () => {
     try {
-      if (uriFront) {
-        const imgResponse = await fetch(uriFront);
-        const imageBlob = await imgResponse.blob();
-        const formData = new FormData()
-        formData.append('image', imageBlob);
-        console.log("sending...")
-    
-        const response = await fetch('https://httpbin.org/post', {
-          method: 'POST',
-          body: JSON.stringify({
-            message: 'Hello from Expo!',
+      if (uriFront && uriBack) {
+        const uuid = uuidv4();
+        console.log(uuid);
+        const img64 = await convertImageToBase64(uriFront);
+        const img64b = await convertImageToBase64(uriBack);
+        // console.log(img64)
+
+        console.log("sending");
+        const response = await fetch('https://excited-frog-reasonably.ngrok-free.app/upload', {
+          method: 'POST', 
+          headers: {"Content-Type":"application/json"},
+          body:JSON.stringify({
+            fname:`${uuid}_f.jpg`,
+            fimage: img64,
+            bname:`${uuid}_b.jpg`,
+            bimage: img64b,
           }),
         });
 
@@ -111,10 +114,11 @@ export default function App() {
           const result = await response.json();
           console.log(result);
         }
-    
-        
       }
-  
+        
+
+
+      // console.log("sending...")
       // const response = await fetch('http://206.87.123.80:3000/data', {
       //   method: 'POST',
       //   headers: {
@@ -124,6 +128,15 @@ export default function App() {
       //     message: uriFront
       //   }),
       // });
+      // console.log(response)
+      // console.log("after request")
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! status: ${response.status}`);
+      // } else {
+      //   const result = await response.json();
+      //   console.log(result);
+      // }
+
 
     } catch (error) {
       console.error('Error sending data to server:', error);
