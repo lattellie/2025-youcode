@@ -61,12 +61,10 @@ const Profile: React.FC<Props> = ({ navigation }) => {
       </View>
 
       {images.length > 0 ? (
-        <>
-          {images.map((img) => {
-            console.log(img);
-            return <GalleryImage key={img.id} img={img} />;
-          })}
-        </>
+        images.map((img, idx) => {
+          console.log(img);
+          return <GalleryImage key={idx} img={img} />;
+        })
       ) : (
         <View style={styles.separatorContainer}>
           <View style={styles.line} />
