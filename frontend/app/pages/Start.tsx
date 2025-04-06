@@ -16,10 +16,9 @@ const Start: React.FC<Props> = ({ navigation }) => {
             <View style={styles.container}>
 
                 <Image
-                    source={require('../../assets/mainIconScaledDown.png')}
+                    source={require('../../assets/mainIcon_ScaledDown.png')}
                     style={styles.logo}
                 />
-
 
                 <TouchableOpacity
                     style={styles.button}
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 24,
         borderRadius: 6,
-        marginVertical: 20,
+        marginVertical: 15,
         width: 250,
         alignItems: 'center',
     },
