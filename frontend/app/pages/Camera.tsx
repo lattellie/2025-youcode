@@ -1,32 +1,35 @@
 import { CameraMode, CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Button, Pressable, StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
-import { FontAwesome } from '@expo/vector-icons';
-import { MaterialIcons,Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+const { width, height } = Dimensions.get('window');
 
-export default function Camera() {
+type Props = {
+  navigation: any;
+};
+
+const Camera: React.FC<Props> = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
   const ref = useRef<CameraView>(null);
   const [uriFront, setUriFront] = useState<string | null>(null);
   const [uriBack, setUriBack] = useState<string | null>(null);
-  const [donePhoto, setDonePhoto] = useState<boolean>(false);
-
-  const [mode, setMode] = useState<CameraMode>('picture');
+  const [donePhoto, setDonePhoto] = useState<0|1|2|3>(0);
+  const [isOutdoor, setOutdoor] = useState<boolean | null> (null);
+  const [tags, setTags] = useState<string[]> ([]);
   const [facing, setFacing] = useState<CameraType>('back');
-  const [savedUri, setSavedUri] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
   const convertImageToBase64 = async (uri:string) => {
     try {
-      // Manipulate the image (no actual changes are made, just converting)
       const manipResult = await ImageManipulator.manipulateAsync(
         uri,
         [],
         { base64: true }
       );
-      // console.log('Base64 Image:', manipResult.base64);
       return manipResult.base64;
     } catch (error) {
       console.error('Error converting image to base64:', error);
@@ -55,7 +58,7 @@ export default function Camera() {
         setUriBack(backPhoto.uri);
         console.log('Back photo taken:', backPhoto.uri);
       }
-      setDonePhoto(true);
+      setDonePhoto(1);
     } else {
       const frontPhoto = await ref.current?.takePictureAsync();
       if (frontPhoto) {
@@ -70,20 +73,154 @@ export default function Camera() {
     setFacing((prev) => (prev === 'back' ? 'front' : 'back'));
     console.log(`setting facing to ${facing}`);
   };
-
-  const renderPicture = () => {
-    sendToServer()
+  const switchFB = () => {
+    if (uriFront && uriBack){
+      const temp:string = uriFront;
+      setUriFront(uriBack);
+      setUriBack(temp);
+    }
+  }
+  const renderResult= () =>{
     return (
-      <View>
+      <View style={{flex:1, justifyContent: 'center',alignContent:'center'}}>
+        <View style={{width:width, alignItems:'center'}}>
+          {uriFront && (
+            <Pressable onPress={switchFB}>
+            <Image 
+              source={{ uri: uriFront }} 
+              contentFit="contain" 
+              style={{ 
+                width: width*0.8, 
+                aspectRatio: 1 
+              }} 
+            />
+            </Pressable>
+          )}
+          {uriBack && (
+            <Pressable
+              onPress={switchFB}
+              style={{     
+                position: 'absolute',
+                top: '-10%',
+                left: '5%',
+                width: '30%',
+                height: '40%',
+                borderColor:'white',
+                borderWidth:5,
+                zIndex: 1
+              }}
+            >
+            <Image 
+              source={{ uri: uriBack }} 
+              style={{
+                width:'100%',
+                height:'100%'
+            }}
+            />
+            </Pressable>
+          )}
+        </View>
+        <View style={styles.tagContainer}>
+            <Text style={styles.displayText}>Yayy! You are Outdoor!</Text>
+            <Text >Click on the tag to explore your community</Text>
+            {tags.map((tag, index) => (
+              <TouchableOpacity key={index} style={[styles.tag,]}>
+                <Text style={styles.buttonText}>{tag}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+      </View>
+    )
+  }
+  const renderPicture = () => {
+    return (
+      <View >
         {uriFront && (
-          <Image source={{ uri: uriFront }} contentFit="contain" style={{ width: 300, aspectRatio: 1 }} />
+          <Pressable onPress={switchFB}>
+          <Image 
+            source={{ uri: uriFront }} 
+            contentFit="contain" 
+            style={{ width: width, aspectRatio: 1 }} 
+          />
+          </Pressable>
         )}
         {uriBack && (
-          <Image source={{ uri: uriBack }} contentFit="contain" style={{ width: 300, aspectRatio: 1 }} />
+          <Pressable
+            onPress={switchFB}
+            style={{     
+              position: 'absolute',
+              top: '-10%',
+              left: '5%',
+              width: '40%',
+              height: '40%',
+              borderColor:'white',
+              borderWidth:10,
+              zIndex: 1
+            }}
+          >
+          <Image 
+            source={{ uri: uriBack }} 
+            style={{
+              width:'100%',
+              height:'100%'
+           }}
+          />
+          </Pressable>
         )}
-        <Button onPress={sendToServer} title="upload" />
-        <Button onPress={() => {setDonePhoto(false); setUriFront(null); setUriBack(null)}} title="Take another picture" />
-      </View>
+          <Modal
+            visible={modalVisible}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={{
+                backgroundColor:'white',
+                borderColor:'black',
+                borderWidth:10,
+                borderRadius:20,
+                margin:20,
+                top:'15%',
+                height:'60%',
+                alignItems:'center',
+                justifyContent:'center'
+              }}>
+          <TouchableOpacity style={{width:'90%', alignItems:'flex-end'}} onPress={() => setModalVisible(false)}>
+            <Ionicons name="close-circle" size={30} color="black" />
+          </TouchableOpacity>
+  
+          <View style={styles.tagContainer}>
+            <Text style={styles.displayText}>Outdoor not detected, retake?</Text>
+            {tags.map((tag, index) => (
+              <TouchableOpacity key={index} style={[styles.tag,]}>
+                <Text style={styles.buttonText}>{tag}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+                <View style={styles.oneLine}>
+                  <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText} onPress={()=>{navigation.goBack()}}>Back to Main</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.button} onPress={()=>{setDonePhoto(0);setFacing('back');setUriBack(null);setUriFront(null)}}>
+                    <Text style={styles.buttonText}>Retry</Text>
+                  </TouchableOpacity>
+                </View>
+            </View>
+          </Modal>
+        <View style={styles.oneLine}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={sendToServer}
+          >
+            <Text style={styles.buttonText}>Upload</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {setDonePhoto(0); setUriFront(null); setUriBack(null);setOutdoor(null)}}
+          >
+            <Text style={styles.buttonText}>Retake</Text>
+          </TouchableOpacity>
+        </View>
+        </View>
     );
   };
 
@@ -91,32 +228,43 @@ export default function Camera() {
     try {
       if (uriFront && uriBack) {
         const uuid = uuidv4();
-        console.log(uuid);
+        // console.log(uuid);
         const img64 = await convertImageToBase64(uriFront);
         const img64b = await convertImageToBase64(uriBack);
 
         console.log("sending");
-        const response = await fetch('https://excited-frog-reasonably.ngrok-free.app/upload', {
-          method: 'POST', 
-          headers: {"Content-Type":"application/json"},
-          body:JSON.stringify({
-            fname:`${uuid}_f.jpg`,
-            fimage: img64,
-            bname:`${uuid}_b.jpg`,
-            bimage: img64b,
-          }),
-        });
-
-        console.log("after request")
-        console.log(response)
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        const retOutdoor:boolean = false;
+        const retTags = ['ttttttttttttttttttttttt','tag2','tag3','tag4','tag5'];
+        setOutdoor(retOutdoor);
+        setTags(retTags);
+        if (retOutdoor) {
+          setDonePhoto(2);
         } else {
-          const result = await response.json();
-          console.log(result);
+          setModalVisible(true);
         }
+        console.log(`isOutdoor: ${isOutdoor}, tags: ${tags}`)
+
+
+        // const response = await fetch('https://excited-frog-reasonably.ngrok-free.app/upload', {
+        //   method: 'POST', 
+        //   headers: {"Content-Type":"application/json"},
+        //   body:JSON.stringify({
+        //     fname:`${uuid}_f.jpg`,
+        //     fimage: img64,
+        //     bname:`${uuid}_b.jpg`,
+        //     bimage: img64b,
+        //   }),
+        // });
+
+        // console.log("after request")
+        // console.log(response)
+        // if (!response.ok) {
+        //   throw new Error(`HTTP error! status: ${response.status}`);
+        // } else {
+        //   const result = await response.json();
+        //   console.log(result);
+        // }
       }
-        
     } catch (error) {
       console.error('Error sending data to server:', error);
     }
@@ -124,7 +272,7 @@ export default function Camera() {
   const renderCamera = () => {
     return (
       <CameraView
-        style={styles.camera}
+        style={[styles.camera,{justifyContent:'center'}]}
         ref={ref}
         mode="picture"
         facing={facing}
@@ -150,10 +298,24 @@ export default function Camera() {
     );
   };
 
-  return <View style={styles.container}>{donePhoto ? renderPicture() : renderCamera()}</View>;
+  return <View style={styles.container}>
+    {donePhoto==0 ? renderCamera(): (donePhoto==1? renderPicture(): renderResult())}</View>;
 }
 
 const styles = StyleSheet.create({
+  tagContainer: {
+    width:width,
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'center', 
+    alignItems: 'center',
+    padding: 10,
+  },
+  buttonContainer: {
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start', 
+    padding: 10, 
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -193,4 +355,39 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+  tag: {
+    backgroundColor: '#b0b0b0',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderRadius: 6,
+    marginVertical: 5,
+    marginHorizontal:5,
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: '#1F1F1F',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderRadius: 6,
+    marginVertical: 20,
+    marginHorizontal:5,
+    width: '48%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  displayText: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  oneLine: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  }
 });
+export default Camera;
