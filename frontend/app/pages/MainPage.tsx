@@ -12,14 +12,14 @@ const MainPage: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.text}>Going{'\n'}Outside{'\n'}Today{'\n'}?</Text>
             
             <View style={styles.buttonColumn}>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Gallery')}>
-                    <Text style={styles.buttonText}>I want to check out my profile!</Text>
-                    <Image source={require('../../assets/profile.png')} style={styles.icon} />
-                </TouchableOpacity>
-
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Camera')}>
                     <Text style={styles.buttonText}>Yes!{'\n'}Click here to take a picture and upload</Text>
                     <Image source={require('../../assets/cameraScaledDown.png')} style={styles.icon} />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Gallery')}>
+                    <Text style={styles.buttonText}>I want to check out my profile!</Text>
+                    <Image source={require('../../assets/profile.png')} style={styles.icon} />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Feed')}>
