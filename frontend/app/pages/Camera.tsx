@@ -280,7 +280,7 @@ const Camera: React.FC<Props> = ({ navigation }) => {
         responsiveOrientationWhenOrientationLocked
       >
         <View style={styles.shutterContainer}>
-        <Pressable >
+        <Pressable onPress={()=>{navigation.goBack()}}>
           <Ionicons name="home" size={48} color="white" /> 
         </Pressable>
         <Pressable onPress={takePicture}>
