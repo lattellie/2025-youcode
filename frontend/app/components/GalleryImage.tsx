@@ -1,28 +1,59 @@
-// components/GalleryImage.tsx
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { Text, Image, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 
-type Props = {
-  source: any; // local require() OR { uri: string }
-};
+const GalleryImage: React.FC<any> = ({ img }) => {
+  const [flip, setFlip] = React.useState(false);
 
-const GalleryImage: React.FC<Props> = ({ source }) => {
   return (
-    <Image
-      source={source}
-      style={styles.image}
-      resizeMode="cover"
-    />
+    <TouchableWithoutFeedback onPress={() => setFlip(!flip)}>
+      <View>
+        <Image
+          source={flip ? { uri: img.front_url } : { uri: img.back_url }}
+          style={[styles.image]}
+        />
+        {/* {img.tags.map((tag: any) => (
+          <Text>{tag}</Text>
+        ))} */}
+        <View style={styles.tagContainer}>
+          {img.tags?.map((tag: string, index: number) => (
+            <View key={index} style={styles.badge}>
+              <Text style={styles.badgeText}>{tag}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   image: {
-    width: 200,
-    height: 200,
-    marginBottom: 16,
+    width: 400,
+    height: 400,
+    marginBottom: 1,
     borderRadius: 12,
+  },
+  tagContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginTop: 12,
+    marginBottom: 12,
+    justifyContent: "center",
+  },
+  badge: {
+    backgroundColor: "#bdfcac",
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    margin: 4,
+  },
+  badgeText: {
+    fontSize: 12,
+    color: "#333",
+    fontWeight: "bold",
   },
 });
 
 export default GalleryImage;
+

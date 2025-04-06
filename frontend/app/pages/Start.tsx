@@ -15,6 +15,8 @@ const Start: React.FC<Props> = ({ navigation }) => {
         >
             <View style={styles.container}>
 
+                <Text style={styles.head}>Flock</Text>
+
                 <Image
                     source={require('../../assets/mainIcon_ScaledDown.png')}
                     style={styles.logo}
@@ -46,7 +48,8 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        justifyContent: 'center',
+        //justifyContent: 'center',
+        marginTop: 130,
         alignItems: 'center',
         paddingHorizontal: 20,
     },
@@ -69,6 +72,14 @@ const styles = StyleSheet.create({
         height: 270,
         marginBottom: 30,
     },
+    head:{
+        fontSize: 34,
+        marginTop: 1,
+        marginBottom: 20,
+        fontWeight: 'bold',
+        color: '#333',
+        textAlign: 'center',
+      },        
 
 });
 
