@@ -10,11 +10,13 @@ const MainPage: React.FC<Props> = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Going{'\n'}Outside{'\n'}Today{'\n'}?</Text>
-            {/* <Button
-        title="Explore"
-        onPress={() => navigation.navigate('Feed')}
-      /> */}
+            
             <View style={styles.buttonColumn}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Gallery')}>
+                    <Text style={styles.buttonText}>I want to check out my profile!</Text>
+                    <Image source={require('../../assets/profile.png')} style={styles.icon} />
+                </TouchableOpacity>
+
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Camera')}>
                     <Text style={styles.buttonText}>Yes!{'\n'}Click here to take a picture and upload</Text>
                     <Image source={require('../../assets/cameraScaledDown.png')} style={styles.icon} />
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
     },
     buttonColumn: {
         flexDirection: 'column',
-        gap: 100, 
+        gap: 10, 
     },
     button: {
         backgroundColor: '#FFFFFF',
