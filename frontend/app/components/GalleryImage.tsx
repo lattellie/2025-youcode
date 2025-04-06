@@ -8,7 +8,7 @@ const GalleryImage: React.FC<any> = ({ img }) => {
     <TouchableWithoutFeedback onPress={() => setFlip(!flip)}>
       <View>
         <Image
-          source={flip ? { uri: img.front_url } : { uri: img.back_url }}
+          source={flip ? { uri: img.back_url } : { uri: img.front_url }}
           style={[styles.image]}
         />
         {/* {img.tags.map((tag: any) => (

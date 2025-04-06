@@ -30,6 +30,7 @@ const Profile: React.FC<Props> = ({ navigation }) => {
         console.log('response:', response);
         const json = await response.json();
         console.log('Photos fetched from backend:', json);
+        setImages(json.photos)
 
         // // Fetch userInfo from AsyncStorage
         // const raw = await AsyncStorage.getItem('userInfo');
