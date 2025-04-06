@@ -14,65 +14,77 @@ const Login: React.FC<Props> = ({ navigation }) => {
 
   return (
     <ImageBackground
-                source={require('../../assets/background.png')} // 👈 your background image
-                style={styles.background}
-                resizeMode="cover"
-            >
-    <View style={styles.container}>
-      <Text style={styles.head}>Login to your account</Text>
-      <Text style={styles.text}>
-        Doesn't have an account?{" "}
-        <Text
-          style={styles.link}
-          onPress={() => navigation.navigate("Register")}
-        >
-          Sign up!{" "}
+      source={require("../../assets/background.png")} // 👈 your background image
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <Text style={styles.head}>Login to your account</Text>
+        <Text style={styles.text}>
+          Doesn't have an account?{" "}
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate("Register")}
+          >
+            Sign up!{" "}
+          </Text>
         </Text>
-      </Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate("MainPage")}
-      >
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          value={username}
+          onChangeText={setUsername}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("MainPage")}
+        >
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
 
-      <View style={styles.separatorContainer}>
-        <View style={styles.line} />
-        <Text style={styles.separatorText}>Continue with</Text>
-        <View style={styles.line} />
+        <View style={styles.separatorContainer}>
+          <View style={styles.line} />
+          <Text style={styles.separatorText}>Continue with</Text>
+          <View style={styles.line} />
+        </View>
+
+        <TouchableOpacity style={styles.facebookButton}>
+          <View style={styles.buttonContent}>
+            <FontAwesome name="facebook" size={16} color="white" />
+            <Text style={styles.fakeButtonText}>Login with Facebook</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.googleButton}>
+          <View style={styles.buttonContent}>
+            <FontAwesome name="google" size={16} color="#000000" />
+            <Text style={styles.googleButtonText}>Login with Google</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.appleButton}>
+          <View style={styles.buttonContent}>
+            <FontAwesome name="apple" size={16} color="white" />
+            <Text style={styles.fakeButtonText}>Login with Apple</Text>
+          </View>
+        </TouchableOpacity>
       </View>
-
-      <TouchableOpacity style={styles.facebookButton}>
-        <FontAwesome name="facebook" size={16} color="white" />
-        <Text style={styles.fakeButtonText}>Login with Facebook</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.googleButton}>
-        <FontAwesome name="google" size={16} color="#9AA0A6" />
-        <Text style={styles.googleButtonText}>Login with Google</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.appleButton}>
-        <FontAwesome name="apple" size={16} color="white" />
-        <Text style={styles.fakeButtonText}>Login with Apple</Text>
-      </TouchableOpacity>
-    </View>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
   background: {
     flex: 1,
     justifyContent: 'center',
@@ -136,7 +148,7 @@ const styles = StyleSheet.create({
   },
   googleButton: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#9AA0A6',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 6,
@@ -153,7 +165,7 @@ const styles = StyleSheet.create({
   },
   googleButtonText: {
     marginLeft: 8,
-    color: '#9AA0A6',
+    color: '#000000',
     fontSize: 16,
     fontWeight: '600',
   },
