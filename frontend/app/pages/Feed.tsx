@@ -61,15 +61,15 @@ const Feed: React.FC<Props> = ({ navigation }) => {
       />
 
       {images.length > 0 ? (
-        images.map((img, idx) => {
+        images.slice().reverse().map((img, idx) => {
           console.log(img);
           return <GalleryImage key={idx} img={img} />;
         })
       ) : (
         <View style={styles.separatorContainer}>
-          <View style={styles.line} />
+          <View key={'line'} style={styles.line} />
           <Text style={styles.separatorText}>No Post</Text>
-          <View style={styles.line} />
+          <View key={'line2'} style={styles.line} />
         </View>
       )}
     </ScrollView>

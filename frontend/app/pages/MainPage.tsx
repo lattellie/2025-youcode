@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: width,
         flexDirection: 'column',
-        marginTop: 120,
+        marginTop: '15%',
         alignItems: 'center',
     },
     text: {
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     },
     button: {
         flexDirection:'row',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#efefef',
         paddingVertical: 20,
         paddingHorizontal: 20,
         borderRadius: 23,
