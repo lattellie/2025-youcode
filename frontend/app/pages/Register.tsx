@@ -1,7 +1,13 @@
 // app/pages/Page2.tsx
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useStorage, storeUserId } from '../hooks/useStorage';
+import { useEffect, useRef } from 'react';
+import * as Notifications from 'expo-notifications';
+import { registerForPushNotificationsAsync } from '../utilities/notification';
+
 
 type Props = {
   navigation: any;
@@ -9,11 +15,87 @@ type Props = {
 
 const Register: React.FC<Props> = ({ navigation }) => {
 
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => {
+      if (token) {
+        console.log('Expo push token:', token);
+        setExpoToken(token); // ✅ save to state
+      }
+    });
+  
+    const subscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log('📩 Received notification:', notification);
+    });
+  
+    return () => subscription.remove();
+  }, []);
+  
+
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [accessCode, setAccessCode] = React.useState('');
+  const { setData,  } = useStorage('registerData');
+  const [expoToken, setExpoToken] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => {
+      if (token) {
+        setExpoToken(token); // ✅ save to state
+      }
+    });
+  
+    const subscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log('📩 Received notification:', notification);
+    });
+  
+    return () => subscription.remove();
+  }, []);
+  
+
+  const handleRegister = async() => {
+    if (!firstName || !lastName || !username || !email || !password || !accessCode) {
+      alert('⚠️ Please fill in all fields before registering.');
+      return;
+    }
+
+    try {
+      // Send to backend API
+      const response = await fetch('https://excited-frog-reasonably.ngrok-free.app/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "first_name": firstName,
+          "last_name": lastName,
+          "username": username,
+          "email": email,
+          "pwd": password,
+          "club_code": accessCode,
+          "expo_token": expoToken,
+        }),
+      });
+
+      const result = await response.json();
+      console.log('✅ Registration result:', result);
+
+      if (result.user_id) {
+        // 3. Save userId locally
+        await storeUserId(result.user_id);
+        console.log('userId received and stored:', result.user_id);
+      } else {
+        console.warn('No userId returned from backend');
+      }
+    navigation.navigate('Login');
+  }
+    catch (error) {
+      console.error('Error during registration:', error);
+    }
+  };
+
 
   return (
     <View style={styles.container}>
@@ -25,10 +107,10 @@ const Register: React.FC<Props> = ({ navigation }) => {
         </Text>
       </Text>
       <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        value={firstName}
-        onChangeText={setFirstName}
+      style={styles.input}
+      placeholder="First Name"
+      value={firstName}
+      onChangeText={setFirstName}
       />
       <TextInput
         style={styles.input}
@@ -56,9 +138,15 @@ const Register: React.FC<Props> = ({ navigation }) => {
         onChangeText={setEmail}
         keyboardType="email-address"
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Access Code"
+        value={accessCode}
+        onChangeText={setAccessCode}
+      />
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("Register")}
+        onPress={handleRegister}
       >
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
@@ -102,7 +190,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 15,
     // justifyContent: 'center',
     alignItems: 'center',
   },
@@ -124,7 +212,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 6,
-    marginVertical: 70,
+    marginVertical: 50,
     marginTop: 30,
     width: '50%',
     alignItems: 'center',
