@@ -2,6 +2,8 @@ import { CameraMode, CameraType, CameraView, useCameraPermissions } from 'expo-c
 import { useEffect, useRef, useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
+import { FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons,Ionicons } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
@@ -92,7 +94,6 @@ export default function Camera() {
         console.log(uuid);
         const img64 = await convertImageToBase64(uriFront);
         const img64b = await convertImageToBase64(uriBack);
-        // console.log(img64)
 
         console.log("sending");
         const response = await fetch('https://excited-frog-reasonably.ngrok-free.app/upload', {
@@ -116,28 +117,6 @@ export default function Camera() {
         }
       }
         
-
-
-      // console.log("sending...")
-      // const response = await fetch('http://206.87.123.80:3000/data', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     message: uriFront
-      //   }),
-      // });
-      // console.log(response)
-      // console.log("after request")
-      // if (!response.ok) {
-      //   throw new Error(`HTTP error! status: ${response.status}`);
-      // } else {
-      //   const result = await response.json();
-      //   console.log(result);
-      // }
-
-
     } catch (error) {
       console.error('Error sending data to server:', error);
     }
@@ -153,12 +132,19 @@ export default function Camera() {
         responsiveOrientationWhenOrientationLocked
       >
         <View style={styles.shutterContainer}>
-          <Pressable style={styles.shutterBtn} onPress={takePicture}>
-            <Text style={styles.text}>Take Photo</Text>
+        <Pressable >
+          <Ionicons name="home" size={48} color="white" /> 
+        </Pressable>
+        <Pressable onPress={takePicture}>
+            {({ pressed }) => (
+              <View style={[styles.shutterBtn, { opacity: pressed ? 0.5 : 1,},]}>
+                <View style={[styles.shutterBtnInner, {backgroundColor:"white", opacity: pressed ? 0.5 : 1},]}/>
+              </View>
+            )}
           </Pressable>
-          <Pressable onPress={toggleFacing}>
-            <Text style={styles.text}>Rotate</Text>
-          </Pressable>
+        <Pressable onPress={toggleFacing}>
+          <Ionicons name="camera-reverse" size={48} color="white" /> 
+        </Pressable>
         </View>
       </CameraView>
     );
@@ -189,14 +175,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   shutterBtn: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 5,
-    borderColor: 'white',
+    borderColor: "white",
     width: 85,
     height: 85,
     borderRadius: 45,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  shutterBtnInner: {
+    width: 70,
+    height: 70,
+    borderRadius: 50,
   },
   text: {
     color: 'white',
