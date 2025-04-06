@@ -1,37 +1,75 @@
 // app/pages/Page2.tsx
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { ImageBackground, View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 type Props = {
-  navigation: any;
+    navigation: any;
 };
 
 const Start: React.FC<Props> = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Main page</Text>
-      <Button
-        title="Register"
-        onPress={() => navigation.navigate('Register')}
-      />
-      <Button
-        title="Login"
-        onPress={() => navigation.navigate('Login')}
-      />
-    </View>
-  );
+    return (
+        <ImageBackground
+            source={require('../../assets/background.png')} // 👈 your background image
+            style={styles.background}
+            resizeMode="cover"
+        >
+            <View style={styles.container}>
+
+                <Image
+                    source={require('../../assets/mainIcon_ScaledDown.png')}
+                    style={styles.logo}
+                />
+
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => navigation.navigate('Register')}
+                >
+                    <Text style={styles.buttonText}>Register</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => navigation.navigate('Login')}
+                >
+                    <Text style={styles.buttonText}>Login</Text>
+                </TouchableOpacity>
+            </View>
+        </ImageBackground>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
+    background: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+    button: {
+        backgroundColor: '#1F1F1F',
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 6,
+        marginVertical: 15,
+        width: 250,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    logo: {
+        width: 250,
+        height: 270,
+        marginBottom: 30,
+    },
+
 });
 
 export default Start;
